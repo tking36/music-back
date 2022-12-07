@@ -6,6 +6,8 @@ const mongoose = require ('mongoose');
 const app = express ();
 const db = mongoose.connection;
 require('dotenv').config()
+const cors = require('cors')
+const Music = require('./models/music.js')
 //___________________
 //Port
 //___________________
@@ -38,17 +40,37 @@ db.on('disconnected', () => console.log('mongo disconnected'));
 app.use(express.static('public'));
 
 app.use(express.json());// returns middleware that only parses JSON - may or may not need it depending on your project
-
+app.use(cors())
 
 //___________________
 // Routes
 //___________________
 //localhost:3000
-app.get('/' , (req, res) => {
-  res.json({
-    test: 'whatever'
+app.post('/music', (req,res) => {
+  Music.create(req.body, (err, createdMusic) => {
+      res.json(createdMusic)
   })
-});
+})
+
+app.get('/music', (req,res) => {
+  Music.find({}, (err, foundMusic) => {
+      res.json(foundMusic)
+  })
+})
+
+
+app.delete('/music/:id', (req, res) => {
+  Music.findByIdAndRemove(req.params.id, (err, deletedMusic) => {
+    res.json(deletedMusic)
+  })
+})
+
+app.put('/music/:id', (req, res) => {
+  Music.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, updatedMusic) => {
+    res.json(updatedMusic)
+  })
+})
+
 
 //___________________
 //Listener
