@@ -9,7 +9,8 @@ const musicSchema = new mongoose.Schema({
     genre: String,
     year: Number,
     favorite: Boolean,
-    player: String
+    player: String,
+    lyrics: String
 
 })
 
